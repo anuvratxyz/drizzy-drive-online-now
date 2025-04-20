@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 import { 
@@ -35,6 +35,7 @@ const CourseCard = ({
   level: string,
   videoUrl?: string
 }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
   const videoId = extractYoutubeVideoId(videoUrl);
   
   return (
@@ -45,13 +46,29 @@ const CourseCard = ({
         </span>
       </div>
       {videoId && (
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="absolute inset-0 h-full w-full border-0"
-          />
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg group">
+          {!isPlaying ? (
+            <div 
+              className="relative cursor-pointer"
+              onClick={() => setIsPlaying(true)}
+            >
+              <img
+                src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/60 transition-colors">
+                <PlayIcon className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </div>
+          ) : (
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full border-0"
+            />
+          )}
         </div>
       )}
       <h3 className="text-xl font-bold text-white">{title}</h3>
