@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
@@ -12,6 +11,17 @@ import {
   PlayIcon
 } from 'lucide-react';
 
+// Function to extract YouTube video ID from various URL formats
+const extractYoutubeVideoId = (url?: string): string | null => {
+  if (!url) return null;
+  
+  // Match YouTube URLs
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  
+  return (match && match[7].length === 11) ? match[7] : null;
+};
+
 const CourseCard = ({ 
   title, 
   description, 
@@ -24,31 +34,35 @@ const CourseCard = ({
   duration: string, 
   level: string,
   videoUrl?: string
-}) => (
-  <div className="bg-[#1A2330] rounded-xl p-6 space-y-4 transform transition-all hover:scale-105">
-    <div className="flex justify-between items-center">
-      <span className="text-sm bg-blue-600 text-white px-3 py-1 rounded-full">
-        {level}
-      </span>
-    </div>
-    {videoUrl && (
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoUrl.split('v=')[1].split('&')[0]}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="absolute inset-0 h-full w-full border-0"
-        />
+}) => {
+  const videoId = extractYoutubeVideoId(videoUrl);
+  
+  return (
+    <div className="bg-[#1A2330] rounded-xl p-6 space-y-4 transform transition-all hover:scale-105">
+      <div className="flex justify-between items-center">
+        <span className="text-sm bg-blue-600 text-white px-3 py-1 rounded-full">
+          {level}
+        </span>
       </div>
-    )}
-    <h3 className="text-xl font-bold text-white">{title}</h3>
-    <p className="text-gray-400">{description}</p>
-    <div className="flex justify-end text-gray-500 text-sm">
-      <span>⏱️ {duration}</span>
+      {videoId && (
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 h-full w-full border-0"
+          />
+        </div>
+      )}
+      <h3 className="text-xl font-bold text-white">{title}</h3>
+      <p className="text-gray-400">{description}</p>
+      <div className="flex justify-end text-gray-500 text-sm">
+        <span>⏱️ {duration}</span>
+      </div>
+      <Button variant="default" className="w-full">View Course</Button>
     </div>
-    <Button variant="default" className="w-full">View Course</Button>
-  </div>
-);
+  );
+};
 
 const WhyChooseDrizzyCard = ({ 
   icon: Icon, 
