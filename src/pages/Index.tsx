@@ -25,17 +25,20 @@ const CourseCard = ({
   description, 
   duration, 
   level,
-  videoUrl
+  videoUrl,
+  videos
 }: { 
   title: string, 
   description: string, 
   duration: string, 
   level: string,
-  videoUrl?: string
+  videoUrl?: string,
+  videos?: { title: string; url: string }[]
 }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const videoId = extractYoutubeVideoId(videoUrl);
+  const [selectedVideo, setSelectedVideo] = useState(videoUrl);
+  const videoId = extractYoutubeVideoId(selectedVideo);
   
   return (
     <div className="bg-[#1A2330] rounded-xl p-6 space-y-4 transform transition-all hover:scale-105">
@@ -56,46 +59,66 @@ const CourseCard = ({
           className="w-full"
           onClick={() => setShowVideo(true)}
         >
-          Watch Lecture
+          Watch Lectures
         </Button>
-      ) : videoId && (
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg group">
-          {!isPlaying ? (
-            <div 
-              className="relative cursor-pointer"
-              onClick={() => setIsPlaying(true)}
-            >
-              <img
-                src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
-                alt={title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/60 transition-colors">
-                <PlayIcon className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 transition-opacity" />
-              </div>
+      ) : (
+        <div className="space-y-4">
+          {videos && (
+            <div className="grid gap-2">
+              {videos.map((video, index) => (
+                <Button
+                  key={index}
+                  variant={selectedVideo === video.url ? "default" : "outline"}
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setSelectedVideo(video.url);
+                    setIsPlaying(false);
+                  }}
+                >
+                  {video.title}
+                </Button>
+              ))}
             </div>
-          ) : (
-            <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full border-0"
-            />
           )}
+          
+          {videoId && (
+            <div className="relative aspect-video w-full overflow-hidden rounded-lg group">
+              {!isPlaying ? (
+                <div 
+                  className="relative cursor-pointer"
+                  onClick={() => setIsPlaying(true)}
+                >
+                  <img
+                    src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+                    alt={title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/60 transition-colors">
+                    <PlayIcon className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </div>
+              ) : (
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full border-0"
+                />
+              )}
+            </div>
+          )}
+          
+          <Button 
+            variant="outline" 
+            className="w-full"
+            onClick={() => {
+              setShowVideo(false);
+              setIsPlaying(false);
+            }}
+          >
+            Back to Course
+          </Button>
         </div>
-      )}
-      
-      {showVideo && (
-        <Button 
-          variant="outline" 
-          className="w-full mt-4"
-          onClick={() => {
-            setShowVideo(false);
-            setIsPlaying(false);
-          }}
-        >
-          Back to Course
-        </Button>
       )}
     </div>
   );
@@ -170,6 +193,24 @@ const Index = () => {
             duration="6 weeks"
             level="Beginner"
             videoUrl="https://youtu.be/5ojncFo1HNk?si=n_g4nGbg1mJFBquL"
+            videos={[
+              { 
+                title: "1. Introduction to Driving",
+                url: "https://youtu.be/5ojncFo1HNk?si=n_g4nGbg1mJFBquL"
+              },
+              {
+                title: "2. Basic Vehicle Controls",
+                url: "https://youtu.be/ippjq7-QMS8?si=n2Ivr1nlaWHT9_ea"
+              },
+              {
+                title: "3. Road Signs and Traffic Rules",
+                url: "https://youtu.be/tlxPjW5QSOA?si=prBx2eEiXdN4x-Zu"
+              },
+              {
+                title: "4. Parking Techniques",
+                url: "https://youtu.be/SqzF8LfYQS4?si=J70HQ4j7rp5IU_3j"
+              }
+            ]}
           />
           <CourseCard 
             title="Defensive Driving" 
