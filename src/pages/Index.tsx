@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -87,8 +86,12 @@ const Index = () => {
             </Button>
           </div>
         </div>
-        <div className="hidden md:block bg-gray-800 rounded-xl h-[500px]">
-          {/* Placeholder for hero image */}
+        <div className="hidden md:block bg-gray-800 rounded-xl h-[500px] flex items-center justify-center">
+          <img 
+            src="/lovable-uploads/8af09a51-b0b9-48cc-9b22-005b75d1f2f8.png" 
+            alt="Driving Lesson" 
+            className="max-w-full max-h-full object-contain rounded-xl"
+          />
         </div>
       </div>
 
