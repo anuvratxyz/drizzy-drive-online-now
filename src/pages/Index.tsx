@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
@@ -7,19 +8,22 @@ import {
   CalendarIcon, 
   ShieldCheckIcon, 
   TrophyIcon, 
-  CarFrontIcon 
+  CarFrontIcon,
+  PlayIcon
 } from 'lucide-react';
 
 const CourseCard = ({ 
   title, 
   description, 
   duration, 
-  level 
+  level,
+  videoUrl
 }: { 
   title: string, 
   description: string, 
   duration: string, 
-  level: string 
+  level: string,
+  videoUrl?: string
 }) => (
   <div className="bg-[#1A2330] rounded-xl p-6 space-y-4 transform transition-all hover:scale-105">
     <div className="flex justify-between items-center">
@@ -27,6 +31,16 @@ const CourseCard = ({
         {level}
       </span>
     </div>
+    {videoUrl && (
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+        <iframe
+          src={`https://www.youtube.com/embed/${videoUrl.split('v=')[1].split('&')[0]}`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 h-full w-full border-0"
+        />
+      </div>
+    )}
     <h3 className="text-xl font-bold text-white">{title}</h3>
     <p className="text-gray-400">{description}</p>
     <div className="flex justify-end text-gray-500 text-sm">
@@ -104,6 +118,7 @@ const Index = () => {
             description="Perfect for first-time drivers. Covers all the basics of vehicle operation and road safety."
             duration="6 weeks"
             level="Beginner"
+            videoUrl="https://youtu.be/CCCUTqJ3dBA?si=TwMksL5G7RJKUfnl"
           />
           <CourseCard 
             title="Defensive Driving" 
