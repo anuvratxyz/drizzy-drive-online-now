@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import Navbar from '@/components/Navbar';
 import { 
   BookOpenIcon, 
   CarIcon, 
@@ -61,6 +63,8 @@ const WhyChooseDrizzyCard = ({
 const Index = () => {
   return (
     <div className="min-h-screen bg-[#0F172A] text-white">
+      <Navbar />
+      
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 grid md:grid-cols-2 gap-12 items-center">
         <div className="space-y-6">
