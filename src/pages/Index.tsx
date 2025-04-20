@@ -11,11 +11,9 @@ import {
   PlayIcon
 } from 'lucide-react';
 
-// Function to extract YouTube video ID from various URL formats
 const extractYoutubeVideoId = (url?: string): string | null => {
   if (!url) return null;
   
-  // Match YouTube URLs
   const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
   const match = url.match(regExp);
   
@@ -35,6 +33,7 @@ const CourseCard = ({
   level: string,
   videoUrl?: string
 }) => {
+  const [showVideo, setShowVideo] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const videoId = extractYoutubeVideoId(videoUrl);
   
@@ -45,7 +44,21 @@ const CourseCard = ({
           {level}
         </span>
       </div>
-      {videoId && (
+      <h3 className="text-xl font-bold text-white">{title}</h3>
+      <p className="text-gray-400">{description}</p>
+      <div className="flex justify-end text-gray-500 text-sm">
+        <span>⏱️ {duration}</span>
+      </div>
+      
+      {!showVideo ? (
+        <Button 
+          variant="default" 
+          className="w-full"
+          onClick={() => setShowVideo(true)}
+        >
+          Watch Lecture
+        </Button>
+      ) : videoId && (
         <div className="relative aspect-video w-full overflow-hidden rounded-lg group">
           {!isPlaying ? (
             <div 
@@ -71,12 +84,19 @@ const CourseCard = ({
           )}
         </div>
       )}
-      <h3 className="text-xl font-bold text-white">{title}</h3>
-      <p className="text-gray-400">{description}</p>
-      <div className="flex justify-end text-gray-500 text-sm">
-        <span>⏱️ {duration}</span>
-      </div>
-      <Button variant="default" className="w-full">View Course</Button>
+      
+      {showVideo && (
+        <Button 
+          variant="outline" 
+          className="w-full mt-4"
+          onClick={() => {
+            setShowVideo(false);
+            setIsPlaying(false);
+          }}
+        >
+          Back to Course
+        </Button>
+      )}
     </div>
   );
 };
