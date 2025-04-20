@@ -65,9 +65,16 @@ const Index = () => {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 grid md:grid-cols-2 gap-12 items-center">
         <div className="space-y-6">
-          <h1 className="text-5xl font-bold leading-tight">
-            Learn to Drive with Confidence
-          </h1>
+          <div className="flex items-center space-x-4">
+            <img 
+              src="/lovable-uploads/ee38cfc0-ebe4-4186-a0df-433076c7fd18.png" 
+              alt="Drizzy Logo" 
+              className="h-16 w-16 object-contain"
+            />
+            <h1 className="text-5xl font-bold leading-tight">
+              Drizzy Drive
+            </h1>
+          </div>
           <p className="text-xl text-gray-400">
             Expert online lectures and professional in-person instruction to help you become a safe, confident driver.
           </p>
