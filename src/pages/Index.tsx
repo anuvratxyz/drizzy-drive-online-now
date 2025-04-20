@@ -217,6 +217,13 @@ const Index = () => {
             description="Learn advanced techniques to anticipate and avoid dangerous situations on the road."
             duration="4 weeks"
             level="Intermediate"
+            videoUrl="https://youtu.be/K11S1S4C1qA?si=OVG3Hqrkk0XeZ_hl"
+            videos={[
+              {
+                title: "1. Introduction to Defensive Driving",
+                url: "https://youtu.be/K11S1S4C1qA?si=OVG3Hqrkk0XeZ_hl"
+              }
+            ]}
           />
           <CourseCard 
             title="Highway Driving Mastery" 
