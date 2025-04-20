@@ -149,7 +149,7 @@ const Index = () => {
             description="Perfect for first-time drivers. Covers all the basics of vehicle operation and road safety."
             duration="6 weeks"
             level="Beginner"
-            videoUrl="https://youtu.be/CCCUTqJ3dBA?si=TwMksL5G7RJKUfnl"
+            videoUrl="https://youtu.be/ud8tM2OXcmY?si=MKnzuZKOD8PhhZCQ"
           />
           <CourseCard 
             title="Defensive Driving" 
