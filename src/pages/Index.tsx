@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
@@ -155,7 +156,7 @@ const Index = () => {
           <div className="flex items-center space-x-4">
             <img 
               src="/lovable-uploads/ee38cfc0-ebe4-4186-a0df-433076c7fd18.png" 
-              alt="Drizzy Logo" 
+              alt="Drizzy Logo Small" 
               className="h-16 w-16 object-contain"
             />
             <h1 className="text-5xl font-bold leading-tight">
@@ -174,11 +175,11 @@ const Index = () => {
             </Button>
           </div>
         </div>
-        <div className="hidden md:block bg-gray-800 rounded-xl h-[500px] flex items-center justify-center">
+        <div className="hidden md:block bg-gray-800 rounded-xl h-[500px] relative">
           <img 
-            src="/lovable-uploads/8af09a51-b0b9-48cc-9b22-005b75d1f2f8.png" 
-            alt="Driving Lesson" 
-            className="max-w-full max-h-full object-contain rounded-xl"
+            src="/lovable-uploads/d5fff598-e8fe-4d9c-b224-c397cd7b9638.png" 
+            alt="Drizzy Logo Large" 
+            className="absolute inset-0 w-full h-full object-contain p-12"
           />
         </div>
       </div>
