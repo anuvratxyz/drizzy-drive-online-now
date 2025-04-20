@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
@@ -14,13 +13,11 @@ import {
 const CourseCard = ({ 
   title, 
   description, 
-  lessons, 
   duration, 
   level 
 }: { 
   title: string, 
   description: string, 
-  lessons: number, 
   duration: string, 
   level: string 
 }) => (
@@ -32,8 +29,7 @@ const CourseCard = ({
     </div>
     <h3 className="text-xl font-bold text-white">{title}</h3>
     <p className="text-gray-400">{description}</p>
-    <div className="flex justify-between text-gray-500 text-sm">
-      <span>📖 {lessons} lessons</span>
+    <div className="flex justify-end text-gray-500 text-sm">
       <span>⏱️ {duration}</span>
     </div>
     <Button variant="default" className="w-full">View Course</Button>
@@ -106,21 +102,18 @@ const Index = () => {
           <CourseCard 
             title="Beginner's Driving Course" 
             description="Perfect for first-time drivers. Covers all the basics of vehicle operation and road safety."
-            lessons={12}
             duration="6 weeks"
             level="Beginner"
           />
           <CourseCard 
             title="Defensive Driving" 
             description="Learn advanced techniques to anticipate and avoid dangerous situations on the road."
-            lessons={8}
             duration="4 weeks"
             level="Intermediate"
           />
           <CourseCard 
             title="Highway Driving Mastery" 
             description="Build confidence for highway driving with specialized techniques and safety practices."
-            lessons={6}
             duration="3 weeks"
             level="Intermediate"
           />
