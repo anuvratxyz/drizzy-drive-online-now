@@ -230,6 +230,13 @@ const Index = () => {
             description="Build confidence for highway driving with specialized techniques and safety practices."
             duration="3 weeks"
             level="Intermediate"
+            videoUrl="https://youtu.be/sEJQltBeaAI?si=UoYnnXggM6KmJ1sA"
+            videos={[
+              {
+                title: "1. Highway Driving Fundamentals",
+                url: "https://youtu.be/sEJQltBeaAI?si=UoYnnXggM6KmJ1sA"
+              }
+            ]}
           />
         </div>
         <div className="text-center mt-12">
