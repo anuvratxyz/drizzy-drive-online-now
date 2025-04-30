@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -66,7 +67,7 @@ const Navbar = () => {
           </Link>
           
           <NavigationMenu>
-            <NavigationMenuList>
+            <NavigationMenuList className="gap-6">
               <NavigationMenuItem>
                 <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
                   Home
