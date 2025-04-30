@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -74,17 +73,9 @@ const Navbar = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Courses</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid gap-3 p-4 w-[400px]">
-                    <div className="grid gap-1">
-                      <h4 className="font-medium leading-none">Driving Courses</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Browse our comprehensive driving courses
-                      </p>
-                    </div>
-                  </div>
-                </NavigationMenuContent>
+                <Link to="/courses" className="text-sm font-medium transition-colors hover:text-primary">
+                  Courses
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/book-instructor" className="text-sm font-medium transition-colors hover:text-primary">
