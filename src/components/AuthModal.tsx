@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Dialog, 
@@ -12,11 +11,12 @@ import { Button } from '@/components/ui/button';
 import { TabsContent, Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogInIcon, UserPlusIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useToast } from '@/hooks/use-toast';
+import { useUser } from '@/contexts/UserContext';
 
 // Define schema for sign in form
 const signInSchema = z.object({
@@ -39,6 +39,8 @@ interface AuthModalProps {
 
 const AuthModal = ({ open, onOpenChange, defaultTab = 'sign-in' }: AuthModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+  const { setUser } = useUser();
   
   // Sign in form
   const signInForm = useForm<z.infer<typeof signInSchema>>({
@@ -65,8 +67,13 @@ const AuthModal = ({ open, onOpenChange, defaultTab = 'sign-in' }: AuthModalProp
     console.log("Sign in data:", data);
     setTimeout(() => {
       setIsLoading(false);
-      // For demo purposes only - in a real app, you would handle the authentication response
-      alert("Sign in successful! (Demo only)");
+      // Set the user in context
+      setUser({ email: data.email });
+      // Show success toast
+      toast({
+        title: "Signed in successfully",
+        description: `Welcome back, ${data.email}`,
+      });
       onOpenChange(false);
     }, 1000);
   };
@@ -77,17 +84,32 @@ const AuthModal = ({ open, onOpenChange, defaultTab = 'sign-in' }: AuthModalProp
     console.log("Sign up data:", data);
     setTimeout(() => {
       setIsLoading(false);
-      // For demo purposes only - in a real app, you would handle the authentication response
-      alert("Account created successfully! (Demo only)");
+      // Set the user in context
+      setUser({ email: data.email, name: data.name });
+      // Show success toast
+      toast({
+        title: "Account created successfully",
+        description: `Welcome to Drizzy, ${data.name || data.email}`,
+      });
       onOpenChange(false);
     }, 1000);
   };
 
   const handleGoogleAuth = () => {
+    setIsLoading(true);
     // This is a placeholder for the Google OAuth flow
     // In a real implementation with Supabase or another auth provider,
     // this would redirect to the Google authentication page
-    window.open('https://accounts.google.com', '_blank');
+    setTimeout(() => {
+      setIsLoading(false);
+      const mockEmail = "user@gmail.com";
+      setUser({ email: mockEmail });
+      toast({
+        title: "Signed in with Google",
+        description: `Welcome, ${mockEmail}`,
+      });
+      onOpenChange(false);
+    }, 1000);
     console.log('Google auth initiated');
   };
 
