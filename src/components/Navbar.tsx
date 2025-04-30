@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
@@ -10,8 +10,22 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import AuthModal from './AuthModal';
 
 const Navbar = () => {
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<'sign-in' | 'sign-up'>('sign-in');
+
+  const openSignIn = () => {
+    setAuthModalTab('sign-in');
+    setAuthModalOpen(true);
+  };
+
+  const openSignUp = () => {
+    setAuthModalTab('sign-up');
+    setAuthModalOpen(true);
+  };
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -73,14 +87,20 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="ghost" asChild>
-            <Link to="/sign-in">Sign In</Link>
+          <Button variant="ghost" onClick={openSignIn}>
+            Sign In
           </Button>
-          <Button asChild>
-            <Link to="/sign-up">Sign Up</Link>
+          <Button onClick={openSignUp}>
+            Sign Up
           </Button>
         </div>
       </div>
+
+      <AuthModal 
+        open={authModalOpen} 
+        onOpenChange={setAuthModalOpen} 
+        defaultTab={authModalTab} 
+      />
     </nav>
   );
 };
