@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -11,6 +11,25 @@ import {
 import { Button } from '@/components/ui/button';
 import { TabsContent, Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LogInIcon, UserPlusIcon } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+// Define schema for sign in form
+const signInSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
+
+// Define schema for sign up form
+const signUpSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
 
 interface AuthModalProps {
   open: boolean;
@@ -19,6 +38,51 @@ interface AuthModalProps {
 }
 
 const AuthModal = ({ open, onOpenChange, defaultTab = 'sign-in' }: AuthModalProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Sign in form
+  const signInForm = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  // Sign up form
+  const signUpForm = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleSignIn = (data: z.infer<typeof signInSchema>) => {
+    setIsLoading(true);
+    // This would normally connect to your backend/authentication service
+    console.log("Sign in data:", data);
+    setTimeout(() => {
+      setIsLoading(false);
+      // For demo purposes only - in a real app, you would handle the authentication response
+      alert("Sign in successful! (Demo only)");
+      onOpenChange(false);
+    }, 1000);
+  };
+
+  const handleSignUp = (data: z.infer<typeof signUpSchema>) => {
+    setIsLoading(true);
+    // This would normally connect to your backend/authentication service
+    console.log("Sign up data:", data);
+    setTimeout(() => {
+      setIsLoading(false);
+      // For demo purposes only - in a real app, you would handle the authentication response
+      alert("Account created successfully! (Demo only)");
+      onOpenChange(false);
+    }, 1000);
+  };
+
   const handleGoogleAuth = () => {
     // This is a placeholder for the Google OAuth flow
     // In a real implementation with Supabase or another auth provider,
@@ -44,6 +108,57 @@ const AuthModal = ({ open, onOpenChange, defaultTab = 'sign-in' }: AuthModalProp
           </TabsList>
           
           <TabsContent value="sign-in" className="py-4 space-y-4">
+            <Form {...signInForm}>
+              <form onSubmit={signInForm.handleSubmit(handleSignIn)} className="space-y-4">
+                <FormField
+                  control={signInForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="your.email@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={signInForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="••••••••" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <span>Signing in...</span>
+                  ) : (
+                    <>
+                      <LogInIcon className="mr-2 h-4 w-4" /> Sign In
+                    </>
+                  )}
+                </Button>
+              </form>
+            </Form>
+            
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+            
             <Button 
               variant="outline" 
               className="w-full flex items-center justify-center gap-2"
@@ -75,6 +190,71 @@ const AuthModal = ({ open, onOpenChange, defaultTab = 'sign-in' }: AuthModalProp
           </TabsContent>
           
           <TabsContent value="sign-up" className="py-4 space-y-4">
+            <Form {...signUpForm}>
+              <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
+                <FormField
+                  control={signUpForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={signUpForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="your.email@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={signUpForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="••••••••" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <span>Creating account...</span>
+                  ) : (
+                    <>
+                      <UserPlusIcon className="mr-2 h-4 w-4" /> Sign Up
+                    </>
+                  )}
+                </Button>
+              </form>
+            </Form>
+            
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+            
             <Button 
               variant="outline" 
               className="w-full flex items-center justify-center gap-2"
