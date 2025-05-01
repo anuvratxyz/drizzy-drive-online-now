@@ -1,10 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TabsList, Tabs, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { CalendarIcon, ClockIcon, BookOpenIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, BookOpenIcon, PlayIcon } from 'lucide-react';
 
 interface Course {
   id: number;
@@ -87,35 +87,70 @@ const coursesData: Course[] = [
   }
 ];
 
-const CourseCard = ({ course }: { course: Course }) => (
-  <div className="bg-[#1A2330] rounded-xl overflow-hidden transform transition-all hover:scale-105">
-    <div className="h-40 relative overflow-hidden">
-      <img 
-        src={course.image} 
-        alt={course.title} 
-        className="w-full h-full object-cover"
-      />
-      <div className="absolute top-3 right-3">
-        <Badge className="bg-blue-600 hover:bg-blue-700">{course.level}</Badge>
+// Helper function to extract YouTube video ID from URL
+const extractYoutubeVideoId = (url: string): string | null => {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  
+  return (match && match[7].length === 11) ? match[7] : null;
+};
+
+const CourseCard = ({ course }: { course: Course }) => {
+  const [showVideo, setShowVideo] = useState(false);
+  const videoId = extractYoutubeVideoId(course.videoUrl);
+  
+  return (
+    <div className="bg-[#1A2330] rounded-xl overflow-hidden transform transition-all hover:scale-105">
+      <div className="h-40 relative overflow-hidden">
+        {showVideo && videoId ? (
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full border-0"
+          ></iframe>
+        ) : (
+          <>
+            <img 
+              src={course.image} 
+              alt={course.title} 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition-colors cursor-pointer" onClick={() => setShowVideo(true)}>
+              <PlayIcon className="w-12 h-12 text-white opacity-80 hover:opacity-100 transition-opacity" />
+            </div>
+            <div className="absolute top-3 right-3">
+              <Badge className="bg-blue-600 hover:bg-blue-700">{course.level}</Badge>
+            </div>
+          </>
+        )}
+      </div>
+      <div className="p-6 space-y-4">
+        <h3 className="text-xl font-bold text-white">{course.title}</h3>
+        <p className="text-gray-400">{course.description}</p>
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <div className="flex items-center">
+            <ClockIcon className="w-4 h-4 mr-1" />
+            <span>{course.duration}</span>
+          </div>
+          <div className="flex items-center">
+            <BookOpenIcon className="w-4 h-4 mr-1" />
+            <span>{course.lessons} lessons</span>
+          </div>
+        </div>
+        {showVideo ? (
+          <Button className="w-full" onClick={() => setShowVideo(false)}>
+            Close Video
+          </Button>
+        ) : (
+          <Button className="w-full" onClick={() => setShowVideo(true)}>
+            Watch Preview
+          </Button>
+        )}
       </div>
     </div>
-    <div className="p-6 space-y-4">
-      <h3 className="text-xl font-bold text-white">{course.title}</h3>
-      <p className="text-gray-400">{course.description}</p>
-      <div className="flex items-center justify-between text-sm text-gray-500">
-        <div className="flex items-center">
-          <ClockIcon className="w-4 h-4 mr-1" />
-          <span>{course.duration}</span>
-        </div>
-        <div className="flex items-center">
-          <BookOpenIcon className="w-4 h-4 mr-1" />
-          <span>{course.lessons} lessons</span>
-        </div>
-      </div>
-      <Button className="w-full">Enroll Now</Button>
-    </div>
-  </div>
-);
+  );
+};
 
 const Courses = () => {
   return (
