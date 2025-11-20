@@ -15,12 +15,135 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <style>
+      /* small styles for the auth UI (non-invasive) */
+      #auth-ui {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: Arial, Helvetica, sans-serif;
+        z-index: 9999;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      }
+      #auth-ui button { margin: 4px 6px; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+      #auth-ui .primary { background:#0066cc; color:#fff; border: 1px solid #0055aa; }
+      #auth-ui pre { max-width: 360px; white-space: pre-wrap; word-break: break-word; font-size: 12px; }
+    </style>
   </head>
 
   <body>
+    <!-- Minimal floating auth UI (keeps React root untouched) -->
+    <div id="auth-ui" aria-hidden="false">
+      <div style="margin-bottom:6px"><strong>Auth</strong></div>
+      <div>
+        <button id="loginBtn" class="primary">Sign In</button>
+        <button id="logoutBtn">Sign Out</button>
+      </div>
+      <div style="margin-top:8px">
+        <div id="authStatus">Not signed in</div>
+        <pre id="authClaims" style="display:none"></pre>
+      </div>
+    </div>
+
     <div id="root"></div>
+
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+
+    <!-- ======= Begin simple Cognito Hosted UI auth script ======= -->
+    <script>
+      // ---------- YOUR COGNITO CONFIG (already created in console) ----------
+      const COGNITO_DOMAIN = "us-east-16cauuhmewy.auth.us-east-1.amazoncognito.com";
+      const CLIENT_ID = "6takhnotvtt9kdir86hf9cv81";
+      const REDIRECT_URI = "https://main.d4rmxqdo4.amplifyapp.com/"; // must match callback URL in Cognito exactly
+      // ---------------------------------------------------------------------
+
+      const LOGIN_URL = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=openid+email&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+      const LOGOUT_URL = `https://${COGNITO_DOMAIN}/logout?client_id=${CLIENT_ID}&logout_uri=${encodeURIComponent(REDIRECT_URI)}`;
+
+      // parse URL hash fragment "#id_token=...&access_token=..."
+      function parseHashFragment(h) {
+        if (!h) return {};
+        if (h.startsWith('#')) h = h.slice(1);
+        return Object.fromEntries(h.split('&').filter(Boolean).map(p => p.split('=').map(decodeURIComponent)));
+      }
+
+      // decode JWT payload (demo-only)
+      function decodeJwtPayload(token) {
+        if (!token) return null;
+        try {
+          const part = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+          const padded = part + '='.repeat((4 - part.length % 4) % 4);
+          const json = atob(padded);
+          return JSON.parse(decodeURIComponent(escape(json)));
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function setStatus(text) {
+        const s = document.getElementById('authStatus');
+        if (s) s.innerText = text;
+      }
+
+      function showClaims(obj) {
+        const el = document.getElementById('authClaims');
+        if (!el) return;
+        if (!obj) { el.style.display='none'; el.innerText=''; return; }
+        el.style.display = 'block';
+        el.innerText = JSON.stringify(obj, null, 2);
+      }
+
+      // handle incoming redirect from Cognito (with tokens in URL fragment)
+      (function handleCognitoRedirect() {
+        const frag = parseHashFragment(window.location.hash);
+        if (frag.id_token) {
+          sessionStorage.setItem('id_token', frag.id_token);
+          if (frag.access_token) sessionStorage.setItem('access_token', frag.access_token);
+          // clean URL (remove hash)
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+        updateAuthUI();
+      })();
+
+      function updateAuthUI() {
+        const id = sessionStorage.getItem('id_token');
+        if (id) {
+          const claims = decodeJwtPayload(id);
+          const display = (claims && (claims.email || claims.username || claims.sub)) || 'user';
+          setStatus('Signed in: ' + display);
+          showClaims(claims);
+        } else {
+          setStatus('Not signed in');
+          showClaims(null);
+        }
+      }
+
+      // button hooks
+      document.addEventListener('DOMContentLoaded', () => {
+        const login = document.getElementById('loginBtn');
+        const logout = document.getElementById('logoutBtn');
+
+        if (login) login.addEventListener('click', () => { window.location.href = LOGIN_URL; });
+        if (logout) logout.addEventListener('click', () => {
+          sessionStorage.removeItem('id_token');
+          sessionStorage.removeItem('access_token');
+          // redirect to Cognito logout to clear session
+          window.location.href = LOGOUT_URL;
+        });
+      });
+
+      // expose small helper for dev console
+      window.getCognitoIdToken = () => sessionStorage.getItem('id_token');
+
+    </script>
+    <!-- ======= End simple Cognito Hosted UI auth script ======= -->
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
